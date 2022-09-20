@@ -1,0 +1,49 @@
+#!/bin/sh
+### Every line in this header section should start with ### for a comment
+### or #PBS for an option for qsub
+### Note: No unix commands may be executed until after the last #PBS line
+###
+### Account information
+#PBS -W group_list=ku_00041 -A ku_00041
+###
+### Send mail when job is aborted or terminates abnormally
+#PBS -M s193125@student.dtu.dk
+#PBS -m abe
+###
+### Compute resources, here 1 core on 1 node
+#PBS -l nodes=1:ppn=20:thinnode
+###
+### Required RAM in GB
+#PBS -l mem=80GB
+###
+### How long (max) will the job take
+#PBS -l walltime=1:00:00
+###
+
+### Output files - not required to be specified
+### Comment out the next 2 lines to use the job id instead in the file names
+#PBS -e /home/projects/ku_00041/people/markri/qsub_logs/fastqc.err
+#PBS -o /home/projects/ku_00041/people/markri/qsub_logs/fastqc.log
+###
+### Job name - not required to be specified
+### It is often easier just to use the job id instead for recognition
+#PBS -N Martin_QC
+###
+### More qsub options can be added here
+
+# This part is the real job script
+# Here follows the user commands:
+
+# Load all required modules for the job
+module load tools ngs jre/1.8.0 perl fastqc/0.11.9
+
+cd /home/projects/ku_00041/people/markri/data/subset/
+fastqc *
+
+module purge
+
+module load tools anaconda3/4.4.0 multiqc/1.10.1
+
+multiqc .
+
+
